@@ -7,7 +7,7 @@ class Controller():
     
     def __init__(self, deck : Deck(), view):
         #models
-        self.players = list[Player()] = []
+        self.players: list[Player()] = []
         self.deck = deck
 
         #view
@@ -16,7 +16,7 @@ class Controller():
     def get_players(self):
         """Get some players"""
 
-        while len(self.players) < 5:
+        while len(self.players) < 2:
             name = self.view.prompt_for_players()
             if not name:
                 return
@@ -60,15 +60,15 @@ class Controller():
         while running:
             self.start_game()
             for player in self.players:
-                player.view.show_player_hand(player.name, player.hand)
+                self.view.show_player_hand(player.name, player.hand)
             self.view.prompt_for_flip_cards()
             for player in self.players:
                 for card in player.hand:
                     card.is_face_up = True
-            self.view.show_player_hand(player.name, player.hand)
+                self.view.show_player_hand(player.name, player.hand)
 
             self.view.show_winner(self.evaluate_game())
 
-            self.view.prompt_for_game()
+            running = self.view.prompt_for_new_game()
             self.rebuild_deck()
 
