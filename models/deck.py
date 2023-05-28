@@ -4,7 +4,7 @@ from .card import RANKS, SUITS, Card
 class Deck(list):
     """Deck of cards"""
     def __init__(self):
-        """Has 52 cards."""
+        """Has cards."""
         for rank in RANKS:
             for suit in SUITS:
                 card = Card(suit, rank)
