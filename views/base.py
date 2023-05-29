@@ -9,7 +9,7 @@ class View:
         return name
     
     def show_player_hand(self, name, hand):
-        print(f"Joueur {name} :")
+        print(f"[Joueur {name}]:")
         for card in hand:
             if card.is_face_up:
                 print(card)
