@@ -2,56 +2,35 @@
 
 from models.deck import Deck
 from models.player import Player
-from models.card import RANKS, SUITS
-
-class CheckRankAndSuit():
-    """Check the cards according to their rank and suit."""
-    def check(self, players: list[Player]):
-        """Evaluate best card"""
-        best_candidate = players[0]
-
-        for player in players[1:]:
-            player_card = player.hand[0]
-            best_candidate_card = best_candidate.hand[0]
-
-            score = (
-                RANKS.index(player_card.rank),
-                SUITS.index(player_card.suit)
-                )
-            best_score = (
-                RANKS.index(best_candidate_card.rank),
-                SUITS.index(best_candidate_card.suit)
-            )
-            if score[0] > best_score[0]:
-                best_candidate = player
-            elif score[0] == best_score[0]:
-                if score[1] > best_score[1]:
-                    best_candidate = player
-
-            return best_candidate.name
 
 
 class Controller():
     
-    def __init__(self, deck : Deck(), view, check_strategy):
+    def __init__(self, deck : Deck(), active_view, views, check_strategy):
         #models
         self.players: list[Player()] = []
         self.deck = deck
 
         #view
-        self.view = view
+        self.views = views
+        self.active_view = active_view
 
         self.check_strategy = check_strategy
 
     def get_players(self):
         """Get some players"""
 
-        while len(self.players) < 2:
-            name = self.view.prompt_for_players()
-            if not name:
+        while len(self.players) < 2:  # nombre magique
+            choices = []
+            name = self.active_view.prompt_for_players()
+            choices.append(name)
+            if not any(choices):
                 return
-            player = Player(name)
-            self.players.append(player)
+            for choice in choices:
+                if choice:
+                    name = choice
+                    player = Player(name)
+                    self.players.append(player)
     
     def start_game(self):
         """Shuffle the deck and makes the player draw a card"""
@@ -73,22 +52,29 @@ class Controller():
             self.deck.shuffle()
 
     def run(self):
-        """Run the game"""
         self.get_players()
 
         running = True
         while running:
             self.start_game()
             for player in self.players:
-                self.view.show_player_hand(player.name, player.hand)
-            self.view.prompt_for_flip_cards()
+
+                for view in self.views:
+                    view.show_player_hand(player.name, player.hand)
+
+            self.active_view.prompt_for_flip_cards()
+
             for player in self.players:
                 for card in player.hand:
                     card.is_face_up = True
-                self.view.show_player_hand(player.name, player.hand)
-            
-            self.view.show_winner(self.evaluate_game())
+                for view in self.views:
+                    view.show_player_hand(player.name, player.hand)
 
-            running = self.view.prompt_for_new_game()
+            for view in self.views:
+                view.show_winner(self.evaluate_game())
+
+            running = self.active_view.prompt_for_new_game()
+            if not running:
+                return
+
             self.rebuild_deck()
-

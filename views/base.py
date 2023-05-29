@@ -1,6 +1,6 @@
 """Define the main view."""
 
-class View:
+class PlayerView:
 
     def prompt_for_players(self):
         name = input("Entrez le nom du joueur :")
@@ -30,4 +30,52 @@ class View:
         choice = input("Y/n: ")
         if choice == "n":
             return False
+        return True
+
+
+class BroadcastView:
+
+    def prompt_for_players(self):
+        return None
+    
+    def show_player_hand(self, name, hand):
+        print(f"[Joueur {name}]:")
+        for card in hand:
+            if card.is_face_up:
+                print(card)
+            else:
+                print("(carte face cachée)")
+    
+    def prompt_for_flip_cards(self):
+        return True
+    
+    def show_winner(self, name):
+        """Show the winner."""
+        print(f"Bravo {name} !")
+
+    def prompt_for_new_game(self):
+        return True
+    
+
+class InternetStreamingView:
+
+    def prompt_for_players(self):
+        return None
+    
+    def show_player_hand(self, name, hand):
+        print(f"[Joueur {name}]:")
+        for card in hand:
+            if card.is_face_up:
+                print(card)
+            else:
+                print("(carte face cachée)")
+    
+    def prompt_for_flip_cards(self):
+        return True
+    
+    def show_winner(self, name):
+        """Show the winner."""
+        print(f"Bravo {name} !")
+
+    def prompt_for_new_game(self):
         return True
