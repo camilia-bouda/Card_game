@@ -6,15 +6,15 @@ from models.player import Player
 
 class Controller():
     
-    def __init__(self, deck : Deck(), active_view, views, check_strategy):
-        #models
-        self.players: list[Player()] = []
+    def __init__(self, deck : Deck(), view, check_strategy):
+        # models
+        self.players: list[Player] = []
         self.deck = deck
 
-        #view
-        self.views = views
-        self.active_view = active_view
+        # views
+        self.view = view
 
+        # check strategy
         self.check_strategy = check_strategy
 
     def get_players(self):
@@ -22,7 +22,7 @@ class Controller():
 
         while len(self.players) < 2:  # nombre magique
             choices = []
-            name = self.active_view.prompt_for_players()
+            name = self.view.prompt_for_players()
             choices.append(name)
             if not any(choices):
                 return
@@ -58,22 +58,18 @@ class Controller():
         while running:
             self.start_game()
             for player in self.players:
+                self.view.show_player_hand(player.name, player.hand)
 
-                for view in self.views:
-                    view.show_player_hand(player.name, player.hand)
-
-            self.active_view.prompt_for_flip_cards()
+            self.view.prompt_for_flip_cards()
 
             for player in self.players:
                 for card in player.hand:
                     card.is_face_up = True
-                for view in self.views:
-                    view.show_player_hand(player.name, player.hand)
+                self.view.show_player_hand(player.name, player.hand)
 
-            for view in self.views:
-                view.show_winner(self.evaluate_game())
+            self.view.show_winner(self.evaluate_game())
 
-            running = self.active_view.prompt_for_new_game()
+            running = self.view.prompt_for_new_game()
             if not running:
                 return
 
