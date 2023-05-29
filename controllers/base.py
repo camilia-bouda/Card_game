@@ -2,6 +2,7 @@
 
 from models.deck import Deck
 from models.player import Player
+from models.card import RANKS, SUITS
 
 class Controller():
     
@@ -32,16 +33,26 @@ class Controller():
             player.hand.append(card)
     
     def evaluate_game(self):
-        last_player = self.players[0]
         best_candidate = self.players[0]
 
         for player in self.players[1:]:
             player_card = player.hand[0]
             best_candidate_card = best_candidate.hand[0]
 
-            if player_card > best_candidate_card:
+            score = (
+                RANKS.index(player_card.rank),
+                SUITS.index(player_card.suit)
+                )
+            best_score = (
+                RANKS.index(best_candidate_card.rank),
+                SUITS.index(best_candidate_card.suit)
+            )
+            if score[0] > best_score[0]:
                 best_candidate = player
-            
+            elif score[0] == best_score[0]:
+                if score[1] > best_score[1]:
+                    best_candidate = player
+                                
             return best_candidate.name
     
     def rebuild_deck(self):

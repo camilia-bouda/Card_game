@@ -29,9 +29,6 @@ class Card:
         self.rank = rank
         self.is_face_up = False
 
-        self.rank_score = RANKS.index(self.rank)
-        self.suit_score = SUITS.index(self.suit)
-
     def __str__(self) -> str:
         """
         Used in print.
@@ -43,13 +40,4 @@ class Card:
         Used in print.
         """
         return str(self)
-    
-    def __lt__(self, other: "Card") -> bool:
-        """
-        Compares the score of the current card with the score of another card.
-        """
-        if self.rank_score != other.rank_score:
-            return self.rank_score < other.rank_score
-        
-        return self.suit_score < other.suit_score
 
